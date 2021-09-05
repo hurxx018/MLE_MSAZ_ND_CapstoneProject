@@ -47,10 +47,21 @@ ws = Workspace.from_config()
 datastore = ws.get_default_datastore()
 
 # Create TabularDataset using TabularDatasetFactory
-filename = datastore.path("heart_failure_clinical_records_dataset.csv")
-ds = TabularDatasetFactory.from_delimited_files(filename)
+# filename = datastore.path("heart_failure_clinical_records_dataset.csv")
+# ds = TabularDatasetFactory.from_delimited_files(filename)
 
-x, y = clean_data(ds)
+found = False
+key = "HeartFailurePrediction"
+description_text = "Heart Failure Prediction DataSet for Udacity Capstone Project"
+
+if key in ws.datasets.keys(): 
+    found = True
+    dataset_tmp = ws.datasets[key] 
+# elif:
+#     raise ValueError("Data is not available. Register heart_failure_clinical_records_dataset.csv into Workspace")
+
+
+x, y = clean_data(dataset_tmp)
 
 # Split data into train and test sets.
 x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
