@@ -21,15 +21,14 @@ def clean_data(data):
 
     x_df = data.to_pandas_dataframe().dropna()
 
-    min_values = x_df[normalized_column_names].min(axis=0)
-    max_values = x_df[normalized_column_names].max(axis=0)
+    # min_values = x_df[normalized_column_names].min(axis=0)
+    # max_values = x_df[normalized_column_names].max(axis=0)
 
-    for column_name in normalized_column_names:
-        m0 = min_values[column_name]
-        m1 = max_values[column_name]
-        # print(m0, m1)
+    # for column_name in normalized_column_names:
+    #     m0 = min_values[column_name]
+    #     m1 = max_values[column_name]
 
-        x_df[column_name] = x_df[column_name].apply(lambda x : (x - m0)/(m1 - m0))
+    #     x_df[column_name] = x_df[column_name].apply(lambda x : (x - m0)/(m1 - m0))
 
     category_column_names = ['anaemia', 'diabetes', 'high_blood_pressure', 'sex', 'smoking']
 
@@ -43,13 +42,11 @@ def clean_data(data):
     return x_df, y_df
 
 # Set up workspace and its resource
-ws = Workspace.from_config()
+run = Run.get_context(allow_offline=True, used_for_context_manager=False)
+ws = run.experiment.workspace
 datastore = ws.get_default_datastore()
 
-# Create TabularDataset using TabularDatasetFactory
-# filename = datastore.path("heart_failure_clinical_records_dataset.csv")
-# ds = TabularDatasetFactory.from_delimited_files(filename)
-
+# Get HeartFailurePrediction Dataset
 found = False
 key = "HeartFailurePrediction"
 description_text = "Heart Failure Prediction DataSet for Udacity Capstone Project"
@@ -57,16 +54,12 @@ description_text = "Heart Failure Prediction DataSet for Udacity Capstone Projec
 if key in ws.datasets.keys(): 
     found = True
     dataset_tmp = ws.datasets[key] 
-# elif:
-#     raise ValueError("Data is not available. Register heart_failure_clinical_records_dataset.csv into Workspace")
-
 
 x, y = clean_data(dataset_tmp)
 
 # Split data into train and test sets.
 x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
 
-run = Run.get_context(allow_offline=True, used_for_context_manager=False)
 
 
 def main():
