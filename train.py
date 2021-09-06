@@ -6,9 +6,7 @@ import pandas as pd
 import joblib
 
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import OneHotEncoder
 
 from azureml.core import Workspace
 from azureml.core.run import Run
@@ -21,14 +19,14 @@ def clean_data(data):
 
     x_df = data.to_pandas_dataframe().dropna()
 
-    # min_values = x_df[normalized_column_names].min(axis=0)
-    # max_values = x_df[normalized_column_names].max(axis=0)
+    min_values = x_df[normalized_column_names].min(axis=0)
+    max_values = x_df[normalized_column_names].max(axis=0)
 
-    # for column_name in normalized_column_names:
-    #     m0 = min_values[column_name]
-    #     m1 = max_values[column_name]
+    for column_name in normalized_column_names:
+        m0 = min_values[column_name]
+        m1 = max_values[column_name]
 
-    #     x_df[column_name] = x_df[column_name].apply(lambda x : (x - m0)/(m1 - m0))
+        x_df[column_name] = x_df[column_name].apply(lambda x : (x - m0)/(m1 - m0))
 
     category_column_names = ['anaemia', 'diabetes', 'high_blood_pressure', 'sex', 'smoking']
 
