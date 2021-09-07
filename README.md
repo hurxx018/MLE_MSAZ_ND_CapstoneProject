@@ -81,8 +81,7 @@ For the early stopping policy, we chose BanditPolicy that seems to be efficient 
 The best model of logistic regression algorithm was determined with C~0.94 and max-iter=50.
 I will run HyperDrive after adjusting the range of C to be between 0.9 and 1.5. 
 
-RunDails of HyperDrive
-()  
+RunDails of HyperDrive  
 ![HyperDrive_Rundetail_1](./images/hyperdrive_rundetails_01.png)  
 
 ![HyperDrive_Rundetail_2](./images/hyperdrive_rundetails_02.png)  
@@ -108,14 +107,24 @@ python ./endpoint.py
 a link to a screen recording of the project in action:
 https://youtu.be/Pyx4JLoXeA4
 
-**Demo of the deployed model**
-The best performant model was deployed as a web service in this project. 
-The 
-**Demo of a sample request sent to the endpoint and its response**
+Here are some extra statements to support my screencast.  
+
+**Demo of the deployed model**  
+The best performant model of VotingEnsemble algorithm was deployed as a web service in this project. 
+This model was registered. 
+The local environment was copied from the workspace. 
+The Azure Container instance (AciWebservice) was used with 1 cpu and 1 GB memory. 
+Authorization and Application insights were programmatically enabled.
+
+![Success in deployment](./images/model_deployment_success_08.png)
+
+**Demo of a sample request sent to the endpoint and its response**  
 Get scoring_uri. 
 Make sure that key is available, 
 because authentication was enabled in the deployment.
 Data was set up to be a dictionary with the key "data" and its value list with two elements. 
 That data is stored in a json file (data.json). 
+
+![Output of the deployed model](./images/output_deployedmodel_09.png)
 
 
