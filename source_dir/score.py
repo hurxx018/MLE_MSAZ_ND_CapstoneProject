@@ -1,6 +1,8 @@
 import json
 
 import joblib
+
+import numpy as np
 import pandas as pd
 
 from azureml.core import Model
@@ -27,7 +29,7 @@ dummy_sizes = {
 
 def init():
     global model
-    model_path = Model.get_model_path("HearFailurePrediction")
+    model_path = Model.get_model_path("HeartFailurePrediction")
     model = joblib.load(model_path)
 
 
@@ -35,9 +37,7 @@ def preprocess(x_df):
     normalized_column_names = ['age', 'creatinine_phosphokinase', 'ejection_fraction', 'platelets', 'serum_creatinine', 'serum_sodium','time']
 
     data_types = {column_name:"float32" for column_name in normalized_column_names}
-
-    min_values = data[normalized_column_names].min(axis=0)
-    max_values = data[normalized_column_names].max(axis=0)
+    x_df = x_df.astype(data_types)
 
     for column_name in normalized_column_names:
         m0, m1 = min_max_values[column_name]
@@ -61,7 +61,7 @@ def run(data):
         test = json.loads(data)
         x_df = pd.DataFrame(test['data'])
         x_df = preprocess(x_df)
-        prediction = model.predict(s_df)
+        prediction = model.predict(x_df)
         result = json.dumps({"result" : prediction.tolist()})
     except Exception as e:
         result = json.dumps({"Error" : str(e)})
