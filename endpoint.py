@@ -10,7 +10,6 @@ key = ''
 # Two sets of data to score, so we get two results back
 data = {"data":
         [
-          {
             {
                 "age" : "65", 
                 "anaemia" : "0",
