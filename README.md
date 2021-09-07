@@ -1,8 +1,5 @@
-*NOTE:* This file is a template that you can use to create the README for your project. The *TODO* comments below will highlight the information you should be sure to include.
-
 # Capstone: Prediction of Heart Failure 
 
-*TODO:* Write a short introduction to your project.
 Cardiovascular diseases (CVDs) are the number 1 cause of death globally. 
 CVDs commonly cause heart failures. 
 Early detection of heart failure is one way of addressing the problem. 
@@ -15,43 +12,58 @@ Logistic regression algorithm was run with HyperDrive where two hyperparameters 
 AutoML was run with random parameter sampling and bandit early stopping policy. 
 
 The best model of VotingEnsemble was determined by the AutoML run. 
-Its accuracy was ~0.91 which was larger than the best accuracy ~0.7 of logistic regression with HyperDrive.
+Its accuracy was ~0.86 that was larger than the best accuracy ~0.7 of logistic regression with HyperDrive.
 
 The VotingEnsemble model was deployed for the consumption.
 
 
 ## Project Set Up and Installation
-*OPTIONAL:* If your project has any special installation steps, this is where you should put it. To turn this project into a professional portfolio project, you are encouraged to explain how to set up this project in AzureML.
+This project was completed in the defalut setting of the AzureML.
 
 ## Dataset
 
 ### Overview
-*TODO*: Explain about the data you are using and where you got it from.
 The dataset called Heart Failure clinical records was obtained from Kaggle. 
 
-It has 12 features such as cardiovascular disease, hypertension, diabetes and so on. 
+It has 12 features such as cardiovascular age, disease, hypertension, diabetes and so on. 
 DEATH_EVENT was a predicted attribute for our classification model. 
 
-age,anaemia,creatinine_phosphokinase,diabetes,ejection_fraction,high_blood_pressure,platelets,serum_creatinine,serum_sodium,sex,smoking,time,DEATH_EVENT
+Input features are the following:
+age, anaemia, creatinine_phosphokinase, diabetes, ejection_fraction,
+high_blood_pressure, platelets, serum_creatinine, serum_sodium, sex, smoking, time
+
+Output is DEATH_EVENT
 
 ### Task
-*TODO*: Explain the task you are going to be solving with this dataset and the features you will be using for it.
-The goal was to build a classification model of predicting "DEATH_EVENT".
+The goal was to build a binary classification model of predicting "DEATH_EVENT". 
+The model was developed with using the other 11 input features.
 
 ### Access
-*TODO*: Explain how you are accessing the data in your workspace.
-Data of heart_failure_clinical_records_dataset.csv was uploaded to Datastore in Azure with the name of "HeartFailurePrediction".
+The data of heart_failure_clinical_records_dataset.csv was uploaded to Datastore in Azure with the name of "HeartFailurePrediction".
 
 ## Automated ML
-*TODO*: Give an overview of the `automl` settings and configuration you used for this experiment
+
+The AutoML for the classification was run with the primary metric of accuracy. 
+The cross validation was applied to avoid the overfitting. 
+The running time was limited to be within 30 minutes. 
+The concurrent iteration was applied. 
 
 ### Results
-*TODO*: What are the results you got with your automated ML model? What were the parameters of the model? How could you have improved it?
 
-*TODO* Remeber to provide screenshots of the `RunDetails` widget as well as a screenshot of the best model trained with it's parameters.
+The AutoML found out the best performance model of VotingEnsemble with the accuracy of 0.86. 
+The neural network will be tested to see if the accuracy is improved.
+
+
+Screenshots of the `RunDetails` widget  
+![Rundetail_1](./images/automl_rundetails_01.png)
+  
+![Rundetail_2](./images/automl_rundetails_02.png)
+
+The best performance model of VotingEnsemble  
+![Rundetail_3](./images/automl_bestmodel_votingensemble_03.png)
+
 
 ## Hyperparameter Tuning
-*TODO*: What kind of model did you choose for this experiment and why? Give an overview of the types of parameters and their ranges used for the hyperparameter search
 
 Logistic regression was used to build the binary classification model that is the simplest approach. 
 Logistic regression allowed us to a kind of banchmarking result that we can estimate the accuracy of our classification model.
@@ -65,31 +77,45 @@ For each run, the two parameters were randomly selected (RandomParameter Samplin
 For the early stopping policy, we chose BanditPolicy that seems to be efficient of choosing the early stopping point.
 
 ### Results
-*TODO*: What are the results you got with your model? What were the parameters of the model? How could you have improved it?
-The best model of logistic regression algorithm was determined with C=~ and max-iter=####.
 
-I will run HyperDrive after reducing the range of C. 
-For example, C is one choice.
-
-*TODO* Remeber to provide screenshots of the `RunDetails` widget as well as a screenshot of the best model trained with it's parameters.
+The best model of logistic regression algorithm was determined with C~0.94 and max-iter=50.
+I will run HyperDrive after adjusting the range of C to be between 0.9 and 1.5. 
 
 RunDails of HyperDrive
-()
+()  
+![HyperDrive_Rundetail_1](./images/hyperdrive_rundetails_01.png)  
 
-Best model of logistic regression 
-()
+![HyperDrive_Rundetail_2](./images/hyperdrive_rundetails_02.png)  
+
+![HyperDrive_Rundetail_3](./images/hyperdrive_rundetails_03.png)
+
+Best model of logistic regression  
+![HyperDrive_Rundetail_](./images/hyperdrive_bestmodel_04.png)
+
+![HyperDrive_Rundetail_](./images/hyperdrive_bestmodel_05.png)
 
 ## Model Deployment
-*TODO*: Give an overview of the deployed model and instructions on how to query the endpoint with a sample input.
 
 The best model of VotingEnsemble algorithm was determined by AutoML. 
-This was deployed.
+This model was deployed as a web service.
+
+The example of querying the endpoint is provided with endpoint.py, 
+where scoring_uri and key must be updated. 
+Here is a command: 
+python ./endpoint.py
 
 ## Screen Recording
-*TODO* Provide a link to a screen recording of the project in action. Remember that the screencast should demonstrate:
-- A working model
-- Demo of the deployed  model
-- Demo of a sample request sent to the endpoint and its response
+a link to a screen recording of the project in action:
+https://youtu.be/Pyx4JLoXeA4
 
-## Standout Suggestions
-*TODO (Optional):* This is where you can provide information about any standout suggestions that you have attempted.
+**Demo of the deployed model**
+The best performant model was deployed as a web service in this project. 
+The 
+**Demo of a sample request sent to the endpoint and its response**
+Get scoring_uri. 
+Make sure that key is available, 
+because authentication was enabled in the deployment.
+Data was set up to be a dictionary with the key "data" and its value list with two elements. 
+That data is stored in a json file (data.json). 
+
+
