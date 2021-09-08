@@ -32,7 +32,7 @@ Input features are the following:
 age, anaemia, creatinine_phosphokinase, diabetes, ejection_fraction,
 high_blood_pressure, platelets, serum_creatinine, serum_sodium, sex, smoking, time
 
-Output is DEATH_EVENT
+Output is DEATH_EVENT.
 
 ### Task
 The goal was to build a binary classification model of predicting "DEATH_EVENT". 
@@ -43,23 +43,30 @@ The data of heart_failure_clinical_records_dataset.csv was uploaded to Datastore
 
 ## Automated ML
 
-The AutoML for the classification was run with the primary metric of accuracy. 
+The AutoML for the binary classification was run with the primary metric of accuracy. 
 The cross validation was applied to avoid the overfitting. 
 The running time was limited to be within 30 minutes. 
 The concurrent iteration was applied. 
+The ONNX model save mode was enabled. 
+Early stopping policy was enabled. 
+Automatic featurization was applied.  
+
+Code block of AutoML configuration is shown below.  
+![AutoML_1](./images/01_automl_settings.png)  
 
 ### Results
 
 The AutoML found out the best performance model of VotingEnsemble with the accuracy of 0.86. 
-The neural network will be tested to see if the accuracy is improved.
+It consists of 7 sub-models which are weighted by a constant value 1/7~0.14
 
-
-Screenshots of the `RunDetails` widget  
+Screenshots of the `RunDetails` widget display how the AutoML make a progress in finding out the best model.  
 ![Rundetail_1](./images/automl_rundetails_01.png)
   
+The accuracy of each tested ML model is shown in terms of Run ID. 
+The best accuracy is described by a orange solid line.  
 ![Rundetail_2](./images/automl_rundetails_02.png)
 
-The best performance model of VotingEnsemble  
+The best performance model of VotingEnsemble is described with its accuracy and ID below.  
 ![Rundetail_3](./images/automl_bestmodel_votingensemble_03.png)
 
 
@@ -78,19 +85,25 @@ For the early stopping policy, we chose BanditPolicy that seems to be efficient 
 
 ### Results
 
-The best model of logistic regression algorithm was determined with C~0.94 and max-iter=50.
-I will run HyperDrive after adjusting the range of C to be between 0.9 and 1.5. 
+The best model of logistic regression algorithm was determined with the two hyperparameters of C~0.94 and max-iter=50.
 
-RunDails of HyperDrive  
+
+RunDails of HyperDrive show the progress of the HyperDrive run.  
 ![HyperDrive_Rundetail_1](./images/hyperdrive_rundetails_01.png)  
 
+The accuracy of each tested ML model with its pair of hyperparameters is shown in terms of Run ID. 
+The best accuracy is described by a orange solid line.  
 ![HyperDrive_Rundetail_2](./images/hyperdrive_rundetails_02.png)  
 
+Each point represents an accuracy by color for a give pair of (C, max-iter). 
+The maximum value of the accuracy is about 0.7 shown to be yellow.  
 ![HyperDrive_Rundetail_3](./images/hyperdrive_rundetails_03.png)
 
-Best model of logistic regression  
+The Best model of logistic regression was determined with two hyperparameters of C=~0.94 and max-iter=50. 
+Its accuracy is about 0.7.  
 ![HyperDrive_Rundetail_](./images/hyperdrive_bestmodel_04.png)
 
+The Best model of logistic regression is shown in Azure ML Studion.  
 ![HyperDrive_Rundetail_](./images/hyperdrive_bestmodel_05.png)
 
 ## Model Deployment
@@ -102,6 +115,16 @@ The example of querying the endpoint is provided with endpoint.py,
 where scoring_uri and key must be updated. 
 Here is a command: 
 python ./endpoint.py
+
+## Future directions
+The neural network will be included in the AutoML to see if the accuracy is improved.  
+
+I will run HyperDrive after adjusting the range of C to be between 0.9 and 1.5. 
+This will provide us with the lower bound of the accuracy that the model can be considered to be trained in the future.  
+
+The AutoML training pipeline will be redesigned to interact with other services. 
+I will make the pipeline respond to the anomalies in the streaming data.
+
 
 ## Screen Recording
 a link to a screen recording of the project in action:
@@ -116,15 +139,22 @@ The local environment was copied from the workspace.
 The Azure Container instance (AciWebservice) was used with 1 cpu and 1 GB memory. 
 Authorization and Application insights were programmatically enabled.
 
+The model is successfully deployed to be shown below.  
 ![Success in deployment](./images/model_deployment_success_08.png)
+
+The model is working.  
+![Success in deployment](./images/11_model_deployed_active.png)  
 
 **Demo of a sample request sent to the endpoint and its response**  
 Get scoring_uri. 
 Make sure that key is available, 
 because authentication was enabled in the deployment.
 Data was set up to be a dictionary with the key "data" and its value list with two elements. 
-That data is stored in a json file (data.json). 
+That data is converted to a JSON format and stored in a json file (data.json). 
+A dictionary headers is defined to include content-type and authorization key. 
+These three values (scoring_uri, data, and headers) are used as input for requests.post method.  
 
-![Output of the deployed model](./images/output_deployedmodel_09.png)
+This is the screenshot of the query and its result.  
+![Output of the deployed model](./images/09_output_deploymentmodel_1.png)
 
 
