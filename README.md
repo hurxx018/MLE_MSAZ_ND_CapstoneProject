@@ -18,7 +18,8 @@ The VotingEnsemble model was deployed for the consumption.
 
 
 ## Project Set Up and Installation
-This project was completed in the defalut setting of the AzureML.
+This project was completed in the default setting of the AzureML. 
+The dependencies is described in the conda_dependencies.yml file.
 
 ## Dataset
 
@@ -57,7 +58,7 @@ Code block of AutoML configuration is shown below.
 ### Results
 
 The AutoML found out the best performance model of VotingEnsemble with the accuracy of 0.86. 
-It consists of 7 sub-models which are weighted by a constant value 1/7~0.14
+It consists of 7 sub-models which are weighted by a constant value of 1/7.
 
 Screenshots of the `RunDetails` widget display how the AutoML make a progress in finding out the best model.  
 ![Rundetail_1](./images/automl_rundetails_01.png)
@@ -80,13 +81,21 @@ It was randomly selected from a uniform distribution of (0.1, 1.0).
 max-iter was tested to determine how long the training should be done to find an optimal model.
 It was randomly selected from four values of 50, 100, 500, and 1000.
 
-For each run, the two parameters were randomly selected (RandomParameter Sampling).
+For each run, the two hyper-parameters were randomly selected (RandomParameter Sampling).
 For the early stopping policy, we chose BanditPolicy that seems to be efficient of choosing the early stopping point.
 
 ### Results
 
-The best model of logistic regression algorithm was determined with the two hyperparameters of C~0.94 and max-iter=50.
+The best model of logistic regression algorithm was determined with the two hyperparameters of C~0.94 and max-iter=50. 
+17 weight parameters were determined by the HyperDrive. 
+7 parameters are for continuous variables and the other 10 are for 5 categorical variables of which has 2 values.
 
+array([[ 1.64073199,  0.3162153 , -2.00930503, -0.37549853,  1.90538113,  
+        -0.96853008, -3.62130665,  0.01392038, -0.01386207, -0.066177  ,  
+         0.06623531,  0.03910129, -0.03904299,  0.22115317, -0.22109487,  
+        -0.00494288,  0.00500118]])  
+
+Continuos variables appear to be more important than categorical variables.  
 
 RunDails of HyperDrive show the progress of the HyperDrive run.  
 ![HyperDrive_Rundetail_1](./images/hyperdrive_rundetails_01.png)  
